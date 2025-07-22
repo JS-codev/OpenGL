@@ -52,6 +52,8 @@ To get started with the project, follow these steps:
 ---
 
 ### Explanation:
+- **Counter-clockwise rotation:** Mercury, Earth, Mars, Jupiter, Saturn and Neptune.
+- **Clockwise rotation:** Venus and Uranus.
 
 #### To calcualte each planets' speed:
 
@@ -80,3 +82,41 @@ Where:
 | **Saturn**  | 9.58                   | 9.69                 | $\omega = \frac{9.69}{9.58} \approx 1.01$ rad/s   |
 | **Uranus**  | 19.19                  | 6.81                 | $\omega = \frac{6.81}{19.19} \approx 0.355$ rad/s |
 | **Neptune** | 30.07                  | 5.43                 | $\omega = \frac{5.43}{30.07} \approx 0.181$ rad/s |
+
+--
+
+#### To calculate planet's scale:
+The idea is to scale each planet according to its diameter ratio relative to Earth, and then multiply that by the scale you've used for Earth (i.e., 0.75f). The formula for each planet will be:
+
+**Planet Scale = Earth Scale × Planet Diameter Ratio**
+
+Given our Earth is `0.75f` size:
+
+| Planet      | Diameter Ratio (to Earth) | Calculated Scale         |
+| ----------- | ------------------------- | ------------------------ |
+| **Mercury** | 0.382                     | `0.75 * 0.382 ≈ 0.287f`  |
+| **Venus**   | 0.949                     | `0.75 * 0.949 ≈ 0.712f`  |
+| **Earth**   | 1.000                     | `0.75f`   |
+| **Mars**    | 0.531                     | `0.75 * 0.531 ≈ 0.398f`  |
+| **Jupiter** | 10.947                    | `0.75 * 10.947 ≈ 8.210f` |
+| **Saturn**  | 9.126                     | `0.75 * 9.126 ≈ 6.844f`  |
+| **Uranus**  | 3.981                     | `0.75 * 3.981 ≈ 2.986f`  |
+| **Neptune** | 3.868                     | `0.75 * 3.868 ≈ 2.901f`  |
+
+--
+
+#### The chronological order, distance and axial tilt of each planets:
+
+| **Planet**  | **Distance from Sun (AU)** | **Axial Tilt**              |
+| ----------- | -------------------------- | --------------------------- |
+| **Sun**     | 0.00 AU                    | 7.25°          |
+| **Mercury** | 0.39 AU                    | 0.034°                      |
+| **Venus**   | 0.72 AU                    | 177.4° (retrograde)         |
+| **Earth**   | 1.00 AU                    | 23.5°                       |
+| **Mars**    | 1.52 AU                    | 25.2°                       |
+| **Jupiter** | 5.20 AU                    | 3.13°                       |
+| **Saturn**  | 9.58 AU                    | 26.7°                       |
+| **Uranus**  | 19.18 AU                   | 97.77° (retrograde)         |
+| **Neptune** | 30.07 AU                   | 28.3°                       |
+
+
