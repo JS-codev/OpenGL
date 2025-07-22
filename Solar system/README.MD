@@ -49,4 +49,34 @@ To get started with the project, follow these steps:
    ```bash
     g++ -g -std=c++17 -Iinclude -Linclude/lib src/glad.c src/window.cpp src/main.cpp -lglfw3dll -lopengl32 -o build/run.exe && build/run.exe
    ```
-   
+---
+
+### Explanation:
+
+#### To calcualte each planets' speed:
+
+Angular velocity (angular speed) is the rate at which an object moves around a circle (or orbital path).
+
+We can compute it using the formula:
+
+   **Angular velocity = speed / radius.**
+ 
+Where:
+
+- 𝜔 is the angular velocity in radians per second.
+
+- 𝑣 is the orbital speed of the planet in km/s.
+
+- 𝑟 is the radius (distance from the Sun) in AU (astronomical units).
+
+**Results:**
+| Planet      | Distance from Sun (AU) | Orbital Speed (km/s) | Angular Velocity (rad/s)                          |
+| ----------- | ---------------------- | -------------------- | ------------------------------------------------- |
+| **Mercury** | 0.39                   | 47.87                | $\omega = \frac{47.87}{0.39} \approx 122.8$ rad/s |
+| **Venus**   | 0.72                   | 35.02                | $\omega = \frac{35.02}{0.72} \approx 48.6$ rad/s  |
+| **Earth**   | 1.00                   | 29.78                | $\omega = \frac{29.78}{1.00} \approx 29.78$ rad/s |
+| **Mars**    | 1.52                   | 24.07                | $\omega = \frac{24.07}{1.52} \approx 15.8$ rad/s  |
+| **Jupiter** | 5.20                   | 13.07                | $\omega = \frac{13.07}{5.20} \approx 2.51$ rad/s  |
+| **Saturn**  | 9.58                   | 9.69                 | $\omega = \frac{9.69}{9.58} \approx 1.01$ rad/s   |
+| **Uranus**  | 19.19                  | 6.81                 | $\omega = \frac{6.81}{19.19} \approx 0.355$ rad/s |
+| **Neptune** | 30.07                  | 5.43                 | $\omega = \frac{5.43}{30.07} \approx 0.181$ rad/s |
