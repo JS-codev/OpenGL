@@ -3,7 +3,7 @@
 
 The Phong Lighting Model is a widely-used shading technique in computer graphics. It consists of three main components:
 
-- Click on this image for video preview:
+**Build Preview (Tap on screen to view demo):**
 [![Phong Lighting Model](https://img.youtube.com/vi/5p5zjIDg9Vw/maxresdefault.jpg)](https://youtu.be/5p5zjIDg9Vw)
 
 - **Ambient Lighting**: Provides a constant level of light across the scene, simulating indirect light.

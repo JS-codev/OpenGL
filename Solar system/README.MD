@@ -2,7 +2,7 @@
 # Solar system
 This project demonstrates Earth orbiting around the Sun using OpenGL. It also features a background image and utilizes Phong shading with texture mapping for realistic lighting and material effects.
 
-- **Tap on this image for the completed build preview:**
+**Build Preview (Tap on screen to view demo):**
 
 [![Solar-system build](https://img.youtube.com/vi/oHW6O9A2qII/maxresdefault.jpg)](https://youtu.be/oHW6O9A2qII)
 

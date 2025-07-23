@@ -2,7 +2,7 @@
 # Phong Texture Lighting Maps
 This project demonstrates Phong lighting enhanced with texture-based materials in OpenGL. It features per-fragment lighting using ambient, diffuse, and specular components — each influenced by texture maps and a material's shininess factor of `64.0f` (default).
 
-- Click on this image for video preview:
+**Build Preview (Tap on screen to view demo):**
 [![Phong Texture Lighting Maps](https://img.youtube.com/vi/YVvCJwkp6os/maxresdefault.jpg)](https://youtu.be/YVvCJwkp6os)
 
 - Features:
