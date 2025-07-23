@@ -33,7 +33,7 @@ public:
     float Fov;
 
     // constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(2.0f, 5.0f, 10.0f),  // (left/right pos, up/down pos, front/back pos)
+    Camera(glm::vec3 position = glm::vec3(0.0f, 10.5f, 22.0f),  // (left/right pos, up/down pos, front/back pos)
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
     float yaw = YAW, // intilize once
     float pitch = PITCH): // intilize once
@@ -53,7 +53,7 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    glm::mat4 GetProjectionMatrix(float aspectRatio, float nearPlane = 0.1f, float farPlane = 100.0f) {
+    glm::mat4 GetProjectionMatrix(float aspectRatio, float nearPlane = 0.1f, float farPlane = 1000.0f) {
         return glm::perspective(glm::radians(Fov), aspectRatio, nearPlane, farPlane);
     }
 
@@ -76,13 +76,14 @@ public:
         if (keys[GLFW_KEY_SPACE]) {
             Position += Up * velocity;
         }
-            if (keys[GLFW_KEY_LEFT_ALT]) {
+        if (keys[GLFW_KEY_C]) {
             Position -= Up * velocity;
         }
+
         
         // Shift key as sprint key
-        float speed = 2.5f; // base speed
-        MovementSpeed = keys[GLFW_KEY_LEFT_SHIFT] ? speed * 2.5f : speed;
+        float speed = 8.5f; // base speed
+        MovementSpeed = keys[GLFW_KEY_LEFT_SHIFT] ? speed * 4.5f : speed;
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

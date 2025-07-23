@@ -15,7 +15,7 @@ This project demonstrates Phong lighting enhanced with texture-based materials i
 
 - WASD Movement
 - Hold Shift - sprint
-- Left Alt - move downward
+- C key - move downward
 - Space - move upward
 - Mouse Movement — Look around
 - ESC - Exit the program
@@ -38,11 +38,11 @@ To get started with the project, follow these steps:
 
 2. **Navigate to the root folder:**
    ```bash
-    cd path/to/root/folder
+    cd "Phong Texture Lighting Maps"
    ```
 3. **Compile and Run the Code:**
 - Press `F1` (in VS Code) to run the code using the [code runner extension](https://marketplace.visualstudio.com/items?itemName=formulahendry.code-runner).
-- Alternatively, run the following command:
+- Alternatively, run the following command in the `Git Bash` terminal:
 
    ```bash
     g++ -g -std=c++17 -Iinclude -Linclude/lib src/glad.c src/window.cpp src/main.cpp -lglfw3dll -lopengl32 -o build/run.exe && build/run.exe

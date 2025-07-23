@@ -75,7 +75,7 @@ public:
         if (keys[GLFW_KEY_SPACE]) {
             Position += Up * velocity;
         }
-        if (keys[GLFW_KEY_LEFT_ALT]) {
+        if (keys[GLFW_KEY_C]) {
             Position -= Up * velocity;
         }
         // Shift key as sprint key

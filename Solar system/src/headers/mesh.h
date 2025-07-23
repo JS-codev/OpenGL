@@ -9,7 +9,7 @@
 
 void setupMesh(unsigned int &VAO, unsigned int &VBO, unsigned int &EBO,
                const std::vector<float>& vertices, const std::vector<unsigned int>& indices,
-               unsigned int &lightVAO,  unsigned int &backgroundVAO, unsigned int &backgroundVBO,  const float* quadVertices, size_t quadSizeBytes);
+               unsigned int &lightVAO, unsigned int &backgroundVAO, unsigned int &backgroundVBO,  const float* quadVertices, size_t quadSizeBytes);
 
 // Draw sphere
 void createSphere(std::vector<float>& vertices, std::vector<unsigned int>& indices,
@@ -98,7 +98,7 @@ unsigned int loadTexture(char const * path) {
 
 class Tri {
 private:
-    unsigned int VBO, VAO, EBO, lightVAO, backgroundVAO, backgroundVBO;
+    unsigned int VBO, VAO, EBO, lightVAO, moonVAO, backgroundVAO, backgroundVBO;
     float cameraDistance = 3.0f;  // How far away from triangle
     float cameraAngle = 0.0f;     // Which direction around the triangle
     float deltaTime = 0.0f;	// time between current frame and last frame
@@ -106,10 +106,19 @@ private:
     size_t indexCount;
 
 public:
-    unsigned int earthDiffuseMap = loadTexture("asset/earth.png");    // Replace with your Earth texture path
-    unsigned int  earthSpecularMap = loadTexture("asset/earth_specular.png"); 
-    unsigned int sunTexture = loadTexture("asset/sun.png"); // Or PNG
-    unsigned int backgroundTexture = loadTexture("asset/stars.png");
+    unsigned int earthDiffuseMap = loadTexture("asset/textures/earth.png");    // Replace with your Earth texture path
+    unsigned int earthSpecularMap = loadTexture("asset/textures/earth_specular.png"); 
+    unsigned int sunTexture = loadTexture("asset/textures/sun.png"); // Or PNG
+    unsigned int backgroundTexture = loadTexture("asset/textures/stars.png");
+    unsigned int moonTexture = loadTexture("asset/textures/moon.png");
+    unsigned int mercury = loadTexture("asset/textures/mercury.png");
+    unsigned int mars = loadTexture("asset/textures/mars.png");
+    unsigned int venus = loadTexture("asset/textures/venus.png");
+    unsigned int uranus = loadTexture("asset/textures/uranus.png");
+    unsigned int neptune = loadTexture("asset/textures/neptune.png");
+    unsigned int saturn = loadTexture("asset/textures/saturn.png");
+    unsigned int saturnRing = loadTexture("asset/textures/saturn_ring.png");
+    unsigned int jupiter = loadTexture("asset/textures/jupiter.png");
 
     Tri() {
         std::vector<float> sphereVertices;
@@ -149,9 +158,29 @@ void draw(Shader &light, Shader &shader, Shader &background, Camera &camera) {
     glm::mat4 view = camera.GetViewMatrix();
     glm::mat4 projection = camera.GetProjectionMatrix(1200.0f / 800.0f);
 
-    // Draw the main colored object FIRST
-    shader.use();  // Use the main shader for colored object
+    float timeScale = 0.01f; // Slow down time for better visual (or else all planets rotate too fast to preview)
+    float sizeScale = 10.0f; // increase planet size for better visual
     
+    // Sun
+    float ssize = 12.8f; // Sun size
+    light.use(); // light shader for sun
+    light.setMat4("view", view);
+    light.setMat4("projection", projection);
+    float angle = glfwGetTime() * 0.12f; 
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, lightPos);
+    model = glm::rotate(model, glm::radians(7.25f), glm::vec3(0.0f, 0.0f, 1.0f)); // Sun axial tilt
+    model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f)); // moves at axial tilt direction 
+    model = glm::scale(model, glm::vec3(ssize)); 
+    light.setMat4("model", model);  
+    // Bind sun texture & draw
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sunTexture);
+    light.setInt("sunTexture", 0);
+    glBindVertexArray(lightVAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    shader.use();  // Use the main shader for colored object (earth, moon, etc)
     shader.setVec3("viewPos", camera.Position);
     shader.setVec3("lightPos", lightPos);  // Make sure this matches your fragment shader
     shader.setMat4("view", view);
@@ -173,15 +202,13 @@ void draw(Shader &light, Shader &shader, Shader &background, Camera &camera) {
     shader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);   // Brighter diffuse
     shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-    // Draw sphere
-    glm::mat4 model = glm::mat4(1.0f); 
-    // Rotate around sun
-    float angle = glfwGetTime() * 0.5f;
-    glm::vec3 orbitCenter = lightPos; // move at sun position
-    float x = orbitCenter.x + 5.4f * std::cos(angle);
-    float z = orbitCenter.z + 5.0f * std::sin(angle);
-    float y = orbitCenter.y + 1.5f * std::sin(glfwGetTime() * 1.0f);
- 
+    // Earth
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 29.78f * timeScale; // how fast it moves around sun. 
+    glm::vec3 orbitCenter = lightPos; // move to Sun position
+    float x = (orbitCenter.x + ssize + 1.0f * sizeScale) * std::cos(angle); // x,y,z moves at sun's diameter position, then + 100f from the sun
+    float z = (orbitCenter.z + ssize + 1.0f * sizeScale) * std::sin(angle);
+    float y = (orbitCenter.y + 3.5f) * std::sin(angle);
     glm::vec3 earthPos = glm::vec3(x, y, z);
     model = glm::translate(model, earthPos); // move at circumference of radius 
     model = glm::rotate(model, glm::radians(23.5f), glm::vec3(0.0f, 0.0f, 1.0f)); // Tilt like Earth's axis (23.5 degree) at Z-tilt
@@ -191,19 +218,170 @@ void draw(Shader &light, Shader &shader, Shader &background, Camera &camera) {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
 
-    // Sun
-    light.use();
-    light.setMat4("view", view);
-    light.setMat4("projection", projection);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(1.2f)); // Make it smaller
-    light.setMat4("model", model);  
-    // Bind sun texture
+    // Moon
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 1.022f; // moves slightly faster than earth 
+    orbitCenter = earthPos; // move to Earth postiion
+    float mx = orbitCenter.x + 1.2f * std::cos(-angle);  // Negative sign for opposite direction
+    float mz = orbitCenter.z + 1.2f * std::sin(-angle);
+    float my = orbitCenter.y + 0.75f * std::sin(glfwGetTime() * 0.5f);
+    glm::vec3 moonPos = glm::vec3(mx, my, mz);
+    model = glm::translate(model, moonPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(5.1f), glm::vec3(0.0f, 0.0f, 1.0f)); // Moon's axial tilt
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f)); // Moon's rotation
+    model = glm::scale(model, glm::vec3(0.204f)); // one-quarter the diameter of Earth
+    shader.setMat4("model", model);
+    // bind moon texture & draw
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, sunTexture);
-    light.setInt("sunTexture", 0);
-    glBindVertexArray(lightVAO);
+    glBindTexture(GL_TEXTURE_2D, moonTexture);
+    shader.setInt("moonTexture", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    // Mercury 
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 122.8f * timeScale; // nearest to sun = fastest rotation
+    orbitCenter = lightPos; // move to Earth postiion
+    float mex = (orbitCenter.x + ssize + 0.39f * sizeScale) * std::cos(angle);
+    float mez = (orbitCenter.z + ssize + 0.39f * sizeScale) * std::sin(angle);
+    float mey = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 merPos = glm::vec3(mex, mey, mez);
+    model = glm::translate(model, merPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(0.034f), glm::vec3(0.0f, 0.0f, 1.0f)); // Mercury axial tilt
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f)); 
+    model = glm::scale(model, glm::vec3(0.287f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mercury);
+    shader.setInt("mercury", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+    
+    // Venus
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 48.6f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float vx = (orbitCenter.x + ssize + 0.72f * sizeScale) * std::cos(angle);
+    float vz = (orbitCenter.z + ssize + 0.72f * sizeScale) * std::sin(angle);
+    float vy = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 vPos = glm::vec3(vx, vy, vz);
+    model = glm::translate(model, vPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(177.4f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, -angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f)); // clockwise direction
+    model = glm::scale(model, glm::vec3(0.712f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, venus);
+    shader.setInt("venus", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+    
+    // Mars 
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 15.8f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float mrx = (orbitCenter.x + ssize + 1.52f * sizeScale) * std::cos(angle);
+    float mrz = (orbitCenter.z + ssize + 1.52f * sizeScale) * std::sin(angle);
+    float mry = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 mrPos = glm::vec3(mrx, mry, mrz);
+    model = glm::translate(model, mrPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(25.2f), glm::vec3(0.0f, 0.0f, 1.0f)); 
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.398f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mars);
+    shader.setInt("mars", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    // Jupiter 
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 2.51f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float jx = (orbitCenter.x + 5.20f * sizeScale) * std::cos(angle);
+    float jz = (orbitCenter.z + 5.20f * sizeScale) * std::sin(angle);
+    float jy = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 jPos = glm::vec3(jx, jy, jz);
+    model = glm::translate(model, jPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(3.13f), glm::vec3(0.0f, 0.0f, 1.0f)); 
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(8.210f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, jupiter);
+    shader.setInt("jupiter", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    // Saturn 
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 1.01f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float sx = (orbitCenter.x + 9.58f * sizeScale) * std::cos(angle);
+    float sz = (orbitCenter.z + 9.58f * sizeScale) * std::sin(angle);
+    float sy = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 sPos = glm::vec3(sx, sy, sz);
+    model = glm::translate(model, sPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(26.7f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(6.844f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, saturn);
+    shader.setInt("saturn", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    glm::mat4 ringModel = glm::mat4(1.0f); // Saturn ring 
+    ringModel = glm::translate(ringModel, sPos);  // Position the rings at Saturn's location
+    ringModel = glm::rotate(ringModel, glm::radians(26.7f), glm::vec3(0.0f, 0.0f, 1.0f)); // Align with Saturn's tilt
+    ringModel = glm::rotate(ringModel, angle * 4.7f, glm::vec3(0.0f, 1.0f, 0.0f));  // Rotate rings around the Y axis (same as Saturn)
+    ringModel = glm::scale(ringModel, glm::vec3(10.0f, 1.0f, 10.0f)); 
+    shader.setMat4("model", ringModel); 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, saturnRing); 
+    shader.setInt("saturnRing", 0);
+    glBindVertexArray(VAO); // Ensure you have a separate VAO for the rings
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    // Uranus 
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 0.355f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float ux = (orbitCenter.x + 19.18f * sizeScale) * std::cos(angle);
+    float uz = (orbitCenter.z + 19.18f * sizeScale) * std::sin(angle);
+    float uy = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 uPos = glm::vec3(ux, uy, uz);
+    model = glm::translate(model, uPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(97.77f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, -angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(2.986f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, uranus);
+    shader.setInt("uranus", 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
+
+    // Neptune scaled to 2.901f
+    model = glm::scale(model, glm::vec3());
+    model = glm::mat4(1.0f); 
+    angle = glfwGetTime() * 0.181f * timeScale; 
+    orbitCenter = lightPos; // move to Earth postiion
+    float nx = (orbitCenter.x + 30.07f * sizeScale) * std::cos(angle);
+    float nz = (orbitCenter.z + 30.07f * sizeScale) * std::sin(angle);
+    float ny = (orbitCenter.y + 2.5f) * std::sin(angle);
+    glm::vec3 nPos = glm::vec3(nx, ny, nz);
+    model = glm::translate(model, nPos); // move at circumference of radius 
+    model = glm::rotate(model, glm::radians(28.3f), glm::vec3(0.0f, 0.0f, 1.0f)); 
+    model = glm::rotate(model, angle * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(2.901f)); 
+    shader.setMat4("model", model);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, neptune);
+    shader.setInt("neptune", 0);
+    glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, 0);
 
 }
@@ -213,6 +391,7 @@ void draw(Shader &light, Shader &shader, Shader &background, Camera &camera) {
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &EBO);
         glDeleteVertexArrays(1, &lightVAO);
+        glDeleteVertexArrays(1, &moonVAO);
         glDeleteTextures(1, &earthDiffuseMap);
         glDeleteTextures(1, &earthSpecularMap); 
         glDeleteVertexArrays(1, &backgroundVAO);
@@ -262,7 +441,7 @@ void setupMesh(unsigned int &VAO, unsigned int &VBO, unsigned int &EBO,
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(1); // sun texture
-    
+
     // Set up background
     glGenVertexArrays(1, &backgroundVAO);
     glGenBuffers(1, &backgroundVBO);

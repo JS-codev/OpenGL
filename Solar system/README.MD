@@ -2,8 +2,11 @@
 # Solar system
 This project demonstrates Earth orbiting around the Sun using OpenGL. It also features a background image and utilizes Phong shading with texture mapping for realistic lighting and material effects.
 
-- Click on this image for video preview:
-[![Solar System](https://img.youtube.com/vi/cR0vXMFc648/maxresdefault.jpg)](https://youtu.be/cR0vXMFc648)
+- **Tap on this image for the completed build preview:**
+
+[![Solar-system build](https://img.youtube.com/vi/oHW6O9A2qII/maxresdefault.jpg)](https://youtu.be/oHW6O9A2qII)
+
+- **Preview of the initial stage build:** [Earth & Sun Orbitation](https://youtu.be/cR0vXMFc648)
 
 - Features:
    - Planet orbit simulation with correct orbital mechanics for Earth around the Sun.
@@ -17,7 +20,7 @@ This project demonstrates Earth orbiting around the Sun using OpenGL. It also fe
 
 - WASD Movement
 - Hold Shift - sprint
-- Left Alt - move downward
+- C key - move downward
 - Space - move upward
 - Mouse Movement — Look around
 - ESC - Exit the program
@@ -40,18 +43,18 @@ To get started with the project, follow these steps:
 
 2. **Navigate to the root folder:**
    ```bash
-    cd path/to/root/folder
+    cd "Solar system"
    ```
 3. **Compile and Run the Code:**
 - Press `F1` (in VS Code) to run the code using the [code runner extension](https://marketplace.visualstudio.com/items?itemName=formulahendry.code-runner).
-- Alternatively, run the following command:
+- Alternatively, execute the following command in the `Git Bash` terminal:
 
    ```bash
     g++ -g -std=c++17 -Iinclude -Linclude/lib src/glad.c src/window.cpp src/main.cpp -lglfw3dll -lopengl32 -o build/run.exe && build/run.exe
    ```
 ---
 
-### Explanation:
+## Explanation:
 - **Counter-clockwise rotation:** Mercury, Earth, Mars, Jupiter, Saturn and Neptune.
 - **Clockwise rotation:** Venus and Uranus.
 
@@ -118,5 +121,4 @@ Given our Earth is `0.75f` size:
 | **Saturn**  | 9.58 AU                    | 26.7°                       |
 | **Uranus**  | 19.18 AU                   | 97.77° (retrograde)         |
 | **Neptune** | 30.07 AU                   | 28.3°                       |
-
 
