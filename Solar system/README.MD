@@ -122,3 +122,9 @@ Given our Earth is `0.75f` size:
 | **Uranus**  | 19.18 AU                   | 97.77° (retrograde)         |
 | **Neptune** | 30.07 AU                   | 28.3°                       |
 
+---
+
+#### Sources:
+- [Planets Textures](https://www.solarsystemscope.com/textures/)
+
+
