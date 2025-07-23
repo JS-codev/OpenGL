@@ -33,7 +33,7 @@ To get started with the project, follow these steps:
 
 1. **Clone this repository** to your local machine:
    ```bash
-   git clone <repository_u_rl>
+   git clone https://github.com/JS-codev/OpenGL.git
    ```
 
 2. **Navigate to the root folder:**
