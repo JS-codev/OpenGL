@@ -1,6 +1,8 @@
 
 # Solar system
-This project demonstrates Earth orbiting around the Sun using OpenGL. It also features a background image and utilizes Phong shading with texture mapping for realistic lighting and material effects.
+- This project was done by Joshua Soh. 
+
+- This project demonstrates Earth orbiting around the Sun using OpenGL. It also features a background image and utilizes Phong shading with texture mapping for realistic lighting and material effects.
 
 **Build Preview (Tap on screen to view demo):**
 
