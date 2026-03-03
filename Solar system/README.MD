@@ -52,8 +52,9 @@ To get started with the project, follow these steps:
 - Alternatively, execute the following command in the `Git Bash` terminal:
 
    ```bash
-    g++ -g -std=c++17 -Iinclude -Linclude/lib src/glad.c src/window.cpp src/main.cpp -lglfw3dll -lopengl32 -o build/run.exe && build/run.exe
+   g++ -g -std=c++17 -Iinclude -Linclude/lib src/glad.c src/window.cpp src/main.cpp -lglfw3dll -lopengl32 -o build/run.exe && build/run.exe
    ```
+   - Make sure you have gcc or g++ installed. 
 ---
 
 ## Explanation:
